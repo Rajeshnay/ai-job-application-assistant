@@ -1,5 +1,6 @@
 import streamlit as st
 from utils.resume_parser import extract_text_from_pdf
+from utils.skill_gap import skill_gap_analysis
 
 st.set_page_config(page_title="AI Job Application Assistant", layout="wide")
 
@@ -14,8 +15,15 @@ if st.button("Analyze"):
     else:
         resume_text = extract_text_from_pdf(resume_file)
 
-        st.subheader("📄 Extracted Resume Text")
-        st.text_area("Resume Content", resume_text, height=300)
+        resume_skills, jd_skills, missing_skills = skill_gap_analysis(
+            resume_text, jd_text
+        )
 
-        st.subheader("📝 Job Description")
-        st.text_area("JD Content", jd_text, height=200)
+        st.subheader("✅ Skills Found in Resume")
+        st.write(resume_skills)
+
+        st.subheader("📌 Skills Required in Job Description")
+        st.write(jd_skills)
+
+        st.subheader("❌ Missing Skills (Skill Gap)")
+        st.write(missing_skills)
